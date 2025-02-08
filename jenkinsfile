@@ -1,21 +1,29 @@
 pipeline {
-  agent any
-  stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
-      }
+    agent any
+    
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Build step (if needed)'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'cp index.html /var/www/html/'
+            }
+        }
+
+        stage('Verification') {
+            steps {
+                sh 'curl -I http://localhost/index.html'
+            }
+        }
     }
-    stage('Deploy') {
-      steps {
-        sh 'sudo cp index.html /var/www/html/index.html'
-        sh 'sudo systemctl restart apache2'
-      }
-    }
-    stage('Verify') {
-      steps {
-        sh 'curl -sSf http://localhost'
-      }
-    }
-  }
 }
