@@ -5,8 +5,10 @@ pipeline {
         // Stage 1: Checkout code from Git
         stage('Checkout') {
             steps {
-                git branch: 'main', 
-                url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
+                git(
+                    branch: 'main',
+                    url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
+                )
             }
         }
 
