@@ -15,8 +15,8 @@ pipeline {
             steps {
                 script {
                     // Build image using the Dockerfile in the current directory
-                    docker build -t myapp .
-                   // dockerImage = docker.build("your-docker-repo/my-web-app:${env.BUILD_ID}")
+                    sh 'docker build -t myapp .'
+                    // dockerImage = docker.build("your-docker-repo/my-web-app:${env.BUILD_ID}")
                 }
             }
         }
@@ -27,8 +27,8 @@ pipeline {
                 script {
                     // Authenticate to Docker Hub (store credentials in Jenkins)
                     // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                   //     dockerImage.push()
-                    }
+                    //     dockerImage.push()
+                    // }
                 }
             }
         }
@@ -38,8 +38,8 @@ pipeline {
             steps {
                 script {
                     // Stop and remove old container
-        //            sh 'docker stop my-web-app || true'
-          //          sh 'docker rm my-web-app || true'
+                    // sh 'docker stop my-web-app || true'
+                    // sh 'docker rm my-web-app || true'
                     
                     // Run new container
                     sh "docker run -d -p 8081:8081 --name my-web-app myapp"
