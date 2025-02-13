@@ -12,7 +12,7 @@ pipeline {
             }
         }
 
-        // Stage 2: Build Docker image
+        // Stage 2: Build Docker Image
         stage('Build Docker Image') {
             steps {
                 script {
@@ -42,7 +42,7 @@ pipeline {
                     // Stop and remove old container
                     // sh 'docker stop my-web-app || true'
                     // sh 'docker rm my-web-app || true'
-                    
+
                     // Run new container
                     sh "docker run -d -p 8081:8081 --name my-web-app myapp"
                 }
