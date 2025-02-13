@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     stages {
-        // Stage 1: Checkout code from Git
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 git(
                     branch: 'main',
@@ -12,39 +11,22 @@ pipeline {
             }
         }
 
-        // Stage 2: Build Docker Image
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build image using the Dockerfile in the current directory
                     sh 'docker build -t myapp .'
-                    // dockerImage = docker.build("your-docker-repo/my-web-app:${env.BUILD_ID}")
                 }
             }
         }
 
-        // Stage 3: Push to Docker Registry (optional)
-        stage('Push to Registry') {
-            steps {
-                script {
-                    // Authenticate to Docker Hub (store credentials in Jenkins)
-                    // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                    //     dockerImage.push()
-                    // }
-                }
-            }
-        }
-
-        // Stage 4: Deploy Container (optional)
         stage('Deploy') {
             steps {
                 script {
-                    // Stop and remove old container
-                    // sh 'docker stop my-web-app || true'
-                    // sh 'docker rm my-web-app || true'
-
-                    // Run new container
-                    sh "docker run -d -p 8081:8081 --name my-web-app myapp"
+                    sh '''
+                    docker stop my-web-app || true
+                    docker rm my-web-app || true
+                    docker run -d -p 8081:8081 --name my-web-app myapp
+                    '''
                 }
             }
         }
@@ -52,11 +34,9 @@ pipeline {
 
     post {
         always {
-            // Clean up unused Docker images
             sh 'docker system prune -af'
         }
         success {
-            // Send notifications (optional)
             echo 'Build successful!'
         }
     }
