@@ -1,4 +1,6 @@
-# [title:🚀 Jenkins Deployment Assignment Documentation]### Table of Contents
+# 🚀 Jenkins Deployment Assignment Documentation
+
+### Table of Contents
 
 1. Project Overview
 
@@ -28,7 +30,7 @@
 
 ---
 
-Project Overview
+### 1. Project Overview
 
 This project automates the deployment of a web application( a simple HTML FILE) using Jenkins, Docker, Docker Hub, and AWS ECR. The pipeline includes:
 
@@ -42,7 +44,7 @@ Handling errors and troubleshooting
 
 ---
 
-Prerequisites
+### 2. Prerequisites
 
 Ensure you have the following installed and configured:
 ✅ Git (git --version)
@@ -54,7 +56,7 @@ Ensure you have the following installed and configured:
 
 ---
 
-1️⃣ Cloning the Git Repository
+### 3. Cloning the Git Repository
 
 Clone the project repository from GitHub:
 
@@ -66,14 +68,14 @@ cd jenkins-deployment-assignment
 
 ---
 
-2️⃣ Creating the Dockerfile
+### 4. Creating the Dockerfile
 
 Create a new Dockerfile inside the project directory:
 
 touch Dockerfile
 
 Add the following content:
-
+```Dockerfile
 # Use an official Nginx image
 FROM nginx:latest
 
@@ -85,10 +87,10 @@ EXPOSE 80
 
 # Start the Nginx service
 CMD ["nginx", "-g", "daemon off;"]
-
+```
 ---
 
-3️⃣ Writing the Jenkinsfile
+### 5. Writing the Jenkinsfile
 
 Create a Jenkinsfile:
 
@@ -96,6 +98,7 @@ touch Jenkinsfile
 
 Add the following script:
 
+```groovy
 pipeline {
     agent any
 
@@ -157,12 +160,12 @@ pipeline {
         }
     }
 }
-
-
+```
 ---
 
 
-4️⃣ Setting Up Jenkins Pipeline
+### 6. Setting Up Jenkins Pipeline
+
 
 Follow these steps to configure Jenkins:
 
@@ -183,9 +186,6 @@ Pipeline Plugin
 Docker Pipeline Plugin
 
 AWS CLI Plugin
-
-
-
 
 3. Add Credentials in Jenkins
 
@@ -228,7 +228,7 @@ Click Save.
 
 ---
 
-5️⃣ Running the Jenkins Pipeline
+### 7. 5️⃣ Running the Jenkins Pipeline
 
 To start the pipeline:
 
@@ -245,12 +245,9 @@ Docker Hub: your-dockerhub-username/myapp:latest
 AWS ECR: 123456789012.dkr.ecr.us-east-1.amazonaws.com/myapp:latest
 
 
-
-
-
 ---
 
-6️⃣ Troubleshooting and Error Handling
+### 8. Troubleshooting and Error Handling
 
 Here are common issues and fixes:
 
@@ -322,7 +319,7 @@ Re-run pipeline after fixing errors.
 
 ---
 
-7️⃣ Conclusion
+### 9.  Conclusion
 
 ✅ Project successfully containerized with Docker.
 ✅ Automated deployment using Jenkins
