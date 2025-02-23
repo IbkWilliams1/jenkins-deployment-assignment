@@ -18,6 +18,15 @@ pipeline {
                 }
             }
         }
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    sh 'echo Lf-kzjqm2JL4%3j | docker login -u ibkwilly --password-stdin'
+                    sh 'docker tag ibkecrwilly ibkwilly/myapp:latest'
+                    sh 'docker push ibkwilly/myapp:latest'
+                }
+            }
+        }
 
         stage('Deploy') {
             steps {
