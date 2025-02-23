@@ -14,7 +14,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t myapp .'
+                    sh 'docker build -t ibkwilly:latest .'
                 }
             }
         }
@@ -22,8 +22,8 @@ pipeline {
             steps {
                 script {
                     sh 'echo docker login -u ibkwilly' 
-                    sh 'docker tag ibkwilly ibkwilly/myapp'
-                    sh 'docker push ibkwilly/myapp'
+                    sh 'docker tag ibkwilly ibkwilly:latest'
+                    sh 'docker push ibkwilly:latest'
                 }
             }
         }
