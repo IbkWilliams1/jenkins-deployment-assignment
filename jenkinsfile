@@ -22,8 +22,8 @@ pipeline {
             steps {
                 script {
                     sh 'echo docker login -u ibkwilly' 
-                    sh 'docker tag ibkecrwilly ibkwilly/myapp:latest'
-                    sh 'docker push ibkwilly/myapp:latest'
+                    sh 'docker tag ibkwilly ibkwilly/myapp'
+                    sh 'docker push ibkwilly/myapp'
                 }
             }
         }
