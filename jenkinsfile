@@ -1,29 +1,32 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'ibkwilly/myapp:latest'
+        DOCKER_USERNAME = 'ibkwilly'
+        DOCKER_PAT = 'dckr_pat_RW2Jea4EEALVPw3_n3Ffq0g5Np0' // WARNING: Avoid hardcoding credentials in production!
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
-                git(
-                    branch: 'main',
-                    url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
-                )
+                git branch: 'main', url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t ibkwilly:latest .'
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    sh 'echo docker login -u ibkwilly' 
-                    sh 'docker tag ibkwilly ibkwilly:latest'
-                    sh 'docker push ibkwilly:latest'
+                    sh "echo ${DOCKER_PAT} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -31,11 +34,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh '''
+                    sh """
                     docker stop my-web-app || true
                     docker rm my-web-app || true
-                    docker run -d -p 8081:8081 --name my-web-app myapp
-                    '''
+                    docker pull ${DOCKER_IMAGE}
+                    docker run -d -p 8081:8081 --name my-web-app --restart unless-stopped ${DOCKER_IMAGE}
+                    """
                 }
             }
         }
@@ -43,10 +47,14 @@ pipeline {
 
     post {
         always {
-            sh 'docker system prune -af'
+            echo 'Cleaning up dangling images...'
+            sh 'docker image prune -f'
         }
         success {
-            echo 'Build successful!'
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed!'
         }
     }
 }
