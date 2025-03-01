@@ -2,45 +2,49 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'ibkwilly/myapp:latest'
-        DOCKER_USERNAME = 'ibkwilly'
+        DOCKER_IMAGE = "ibkwilly/myapp"
+        DOCKER_TAG = "latest"
     }
 
     stages {
+        // Checkout code from SCM
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git'
+                git(
+                    url: 'https://github.com/IbkWilliams1/jenkins-deployment-assignment.git',
+                    credentialsId: 'ibkwilly-dockerhub',
+                    branch: 'main'
+                )
             }
         }
 
+        // Build Docker image
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
 
+        // Push to Docker Hub
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'DOCKERHUB_CREDENTIALS', variable: 'DOCKER_PAT')]) {
-                        sh "echo ${DOCKER_PAT} | docker login -u ${DOCKER_USERNAME} --password-stdin"
-                        sh "docker push ${DOCKER_IMAGE}"
+                    docker.withRegistry('https://registry.hub.docker.com', 'ibkwilly-dockerhub') {
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }
             }
         }
 
+        // Deployment stage (example - customize as needed)
         stage('Deploy') {
             steps {
                 script {
-                    sh """
-                    docker stop my-web-app || true
-                    docker rm my-web-app || true
-                    docker pull ${DOCKER_IMAGE}
-                    docker run -d -p 8081:8081 --name my-web-app --restart unless-stopped ${DOCKER_IMAGE}
-                    """
+                    // Add your deployment commands here
+                    // Example: kubectl apply -f deployment.yaml
+                    echo "Deploying ${DOCKER_IMAGE}:${DOCKER_TAG}..."
                 }
             }
         }
@@ -48,14 +52,15 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up dangling images...'
-            sh 'docker image prune -f'
+            echo 'Cleaning up workspace...'
+            cleanWs()
         }
         success {
-            echo 'Build and deployment successful!'
+            echo 'Build and deployment succeeded! ✅'
         }
         failure {
-            echo 'Build or deployment failed!'
+            echo 'Build or deployment failed! ❌'
+            // Add notification steps (email, Slack, etc.)
         }
     }
 }
